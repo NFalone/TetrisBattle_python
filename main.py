@@ -1,4 +1,5 @@
 import tkinter as tk
+import threading
 
 from pic import *
 from func import *
@@ -17,8 +18,17 @@ def main():
 #image load
     pic_back = pic_decode(Background)
     base.create_image(0, 0, anchor=tk.NW, image=pic_back, state=tk.DISABLED)
-    btn_start = pic_decode(button_start)
-    base.create_image(177, 220, anchor=tk.CENTER, image=btn_start, state=tk.DISABLED)
+    pic_btnStart = pic_decode(button_start)
+    base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnStart, state=tk.DISABLED)
+    
+    pic_temp = [0 for i in range(10)]
+    time_num = [[0 for i in range(10)] for j in range(4)]
+    for i in range(10):
+        pic_temp[i] = pic_decode(f'dig{i}')
+        time_num[0][i] = base.create_image(131+(35*i), 44, anchor=tk.CENTER, image=pic_temp[i], state=tk.DISABLED)
+
+#threading
+    threading.Thread()
 
     root.mainloop()
 
