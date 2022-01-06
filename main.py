@@ -1,9 +1,10 @@
 import tkinter as tk
 import threading
 
+from control import drop, go, hold_block, left_shift, right_shift, rotate, set_block
+from core import  Gaming
+from func import StartButton, initial, pic_decode, prepare
 from pic import *
-from func import *
-from core import *
 
 def main():
 #window basic option
@@ -42,18 +43,35 @@ def main():
     pos = [0, 1, 2.5, 3.5]
     for site in pos:
         for i in range(10):
-            time_num[0][i] = base.create_image(307+(35*site), 44, anchor=tk.CENTER, image=pic_temp[i], state=tk.DISABLED)
+            time_num[pos.index(site)][i] = base.create_image(307+(35*site), 44, anchor=tk.CENTER, image=pic_temp[i], state=tk.DISABLED)
     pic_colon = pic_decode(colon)
     base.create_image(315+(35*1.5), 44, anchor=tk.CENTER, image=pic_colon, state=tk.DISABLED)
+#count down 3 seconds
+    pic_temp2 = [0 for i in range(4)]
+    cd_num = [0 for i in range(4)]
+    pic_temp2[0] = pic_decode(cd0)
+    pic_temp2[1] = pic_decode(cd1)
+    pic_temp2[2] = pic_decode(cd2)
+    pic_temp2[3] = pic_decode(cd3)
+    for i in range(4):
+        cd_num[i] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_temp2[i], state=tk.DISABLED)
 
-#ready
-    base.bind("<Button-1>", go)
+#operate bind
+    base.bind("<Button-1>", go) #press the button
+    root.bind("<Up>", rotate) #旋轉方塊
+    root.bind("<Down>", drop) #下降方塊
+    root.bind("<Left>", left_shift) #左移方塊
+    root.bind("<Right>", right_shift) #右移方塊
+    root.bind("<space>", set_block) #放置方塊
+    root.bind("<Shift_L>", hold_block)  #保留方塊
     
 
 #threading
     threads = []
+    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num)))
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
-    threads.append(threading.Thread(target=prepare, args=(base, btn)))
+    threads.append(threading.Thread(target=prepare, args=(base, btn, cd_num)))
+    threads.append(threading.Thread(target=Gaming, args=()))
 
     threads[0].start()
 
