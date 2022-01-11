@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+    nodeJS:
+        image: "node:17"
+        user: "node"
+        working_dir: /home/node/
+        ports:
+          - "9487:80"
+        volumes:
+          - ./web:/home/node/
+        command: "npm run test"
