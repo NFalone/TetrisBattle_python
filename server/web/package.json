@@ -1,0 +1,11 @@
+{
+  "name": "tetris-battle-server",
+  "version": "1.0.0",
+  "description": "Try to made a tetris battle game's server",
+  "main": "netWebSever.js",
+  "scripts": {
+    "test": "node ./netWebSever.js"
+  },
+  "author": "zhang7391",
+  "license": "GPL-3.0-or-later"
+}
