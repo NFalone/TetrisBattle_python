@@ -67,10 +67,10 @@ class bettel
 
 	checkComfirm(systemData)
 	{
+		let ok = [];
 		let tool = new toolbox();
 		for(let agent of systemData.agent)
 		{
-			let ok = []
 			let ID = agent.remoteAddress + "(" + agent.remotePort + ")";
 
 			if(agent["comfirm"] && systemData.playing[ID]["comfirm"])
@@ -87,10 +87,9 @@ class bettel
 				}
 			}
 			else continue;
-
-			ok.reverse();
-			for(let done of ok) systemData.agent.splice(systemData.agent.indexOf(done), 1);
 		}
+		ok.reverse();
+		for(let done of ok) systemData.agent.splice(systemData.agent.indexOf(done), 1);
 	}
 };
 
@@ -147,7 +146,7 @@ const server = net.createServer((socket) =>
 			break;
 		default:
 			{
-				let gameStatus = {};
+				let gameStatus = Object.create(Object.prototype);
 				gameStatus["data"] = data;
 				gameStatus["time"] = gameSystem.gametime[ID];
 	
