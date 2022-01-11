@@ -24,7 +24,7 @@ def StartButton(threads, root, base, btn):
             base.itemconfig(btn[0], state=tk.DISABLED)
             base.itemconfig(btn[1], state=tk.HIDDEN)
         #press the button
-        if (get_switch() == 1):
+        if (switch == 1):
             base.itemconfig(btn[0], state=tk.HIDDEN)
             base.itemconfig(btn[1], state=tk.HIDDEN)
             base.itemconfig(btn[2], state=tk.DISABLED)
