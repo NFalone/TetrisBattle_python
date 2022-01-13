@@ -1,3 +1,4 @@
+from base64 import decode
 import tkinter as tk
 import threading
 
@@ -46,6 +47,32 @@ def main():
             time_num[pos.index(site)][i] = base.create_image(307+(35*site), 44, anchor=tk.CENTER, image=pic_temp[i], state=tk.DISABLED)
     pic_colon = pic_decode(colon)
     base.create_image(315+(35*1.5), 44, anchor=tk.CENTER, image=pic_colon, state=tk.DISABLED)
+#block image load
+    pic_block = [0 for i in range(7)]
+    block_img = [[[0 for i in range(10)] for j in range(20)] for k in range(7)]
+    pic_block[0] = pic_decode(block_red)
+    pic_block[1] = pic_decode(block_orange)
+    pic_block[2] = pic_decode(block_yellow)
+    pic_block[3] = pic_decode(block_green)
+    pic_block[4] = pic_decode(block_lightblue)
+    pic_block[5] = pic_decode(block_blue)
+    pic_block[6] = pic_decode(block_purple)
+    for k in range(7):
+        for i in range(20):
+            for j in range(10):
+                block_img[k][i][j] = base.create_image(87+(18*j), 123+(18*i), anchor=tk.NW, image=pic_block[k], state=tk.DISABLED)
+#next image load 292 144
+    pic_blocknext = [0 for i in range(7)]
+    next_img = [0 for i in range(7)]
+    pic_blocknext[0] = pic_decode(Z)
+    pic_blocknext[1] = pic_decode(L)
+    pic_blocknext[2] = pic_decode(Q)
+    pic_blocknext[3] = pic_decode(S)
+    pic_blocknext[4] = pic_decode(I)
+    pic_blocknext[5] = pic_decode(J)
+    pic_blocknext[6] = pic_decode(T)
+    for i in range(7):
+        next_img[i] = base.create_image(292, 144, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
 #count down 3 seconds
     pic_temp2 = [0 for i in range(4)]
     cd_num = [0 for i in range(4)]
@@ -68,7 +95,7 @@ def main():
 
 #threading
     threads = []
-    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num)))
+    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num, block_img, next_img)))
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
     threads.append(threading.Thread(target=prepare, args=(base, btn, cd_num)))
     threads.append(threading.Thread(target=Gaming, args=()))
