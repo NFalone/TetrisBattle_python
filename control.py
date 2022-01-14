@@ -24,9 +24,9 @@ def hold_block(event):
     pass
 
 #argument transport
-# def set_switch(val):
-#     global switch
-#     switch = val
-# def get_switch():
-#     global switch
-#     return switch
+def set_switch(val):
+    global switch
+    switch = val
+def get_switch():
+    global switch
+    return switch

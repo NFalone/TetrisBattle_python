@@ -94,7 +94,7 @@ def main():
         cd_num[i] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_temp2[i], state=tk.DISABLED)
 
 #operate bind
-    base.bind("<Button-1>", go) #press the button
+    root.bind("<Button-1>", go) #press the button
     root.bind("<Up>", rotate) #旋轉方塊
     root.bind("<Down>", drop) #下降方塊
     root.bind("<Left>", left_shift) #左移方塊
