@@ -1,4 +1,4 @@
-import base64, time, threading
+import base64, time
 import tkinter as tk
 from io import BytesIO
 from PIL import Image, ImageTk
