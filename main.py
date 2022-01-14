@@ -50,6 +50,7 @@ def main():
 #block image load
     pic_block = [0 for i in range(7)]
     block_img = [[[0 for i in range(10)] for j in range(20)] for k in range(7)]
+    remote_block_img = [[[0 for i in range(10)] for j in range(20)] for k in range(7)]
     pic_block[0] = pic_decode(block_red)
     pic_block[1] = pic_decode(block_orange)
     pic_block[2] = pic_decode(block_yellow)
@@ -61,9 +62,11 @@ def main():
         for i in range(20):
             for j in range(10):
                 block_img[k][i][j] = base.create_image(87+(18*j), 123+(18*i), anchor=tk.NW, image=pic_block[k], state=tk.DISABLED)
+                remote_block_img[k][i][j] = base.create_image(457+(18*j), 123+(18*i), anchor=tk.NW, image=pic_block[k], state=tk.DISABLED)
 #next image load 292 144
     pic_blocknext = [0 for i in range(7)]
     next_img = [0 for i in range(7)]
+    remote_next_img = [0 for i in range(7)]
     pic_blocknext[0] = pic_decode(Z)
     pic_blocknext[1] = pic_decode(L)
     pic_blocknext[2] = pic_decode(Q)
@@ -73,6 +76,13 @@ def main():
     pic_blocknext[6] = pic_decode(T)
     for i in range(7):
         next_img[i] = base.create_image(292, 144, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
+        remote_next_img[i] = base.create_image(663, 146, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
+#hold image load with next
+    hold_img = [0 for i in range(7)]
+    remote_hold_img = [0 for i in range(7)]
+    for i in range(7):
+        hold_img[i] = base.create_image(20, 143, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
+        remote_hold_img[i] = base.create_image(391, 145, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
 #count down 3 seconds
     pic_temp2 = [0 for i in range(4)]
     cd_num = [0 for i in range(4)]
@@ -95,7 +105,7 @@ def main():
 
 #threading
     threads = []
-    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num, block_img, next_img)))
+    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img)))
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
     threads.append(threading.Thread(target=prepare, args=(base, btn, cd_num)))
     threads.append(threading.Thread(target=Gaming, args=()))

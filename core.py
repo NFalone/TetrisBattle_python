@@ -92,6 +92,7 @@ def Gaming():
     c = 1
     r = 1
     frame_block = [[0 for i in range(10)] for i in range(20)]
+    frame_blockTemp = [[0 for i in range(10)] for i in range(20)]
 #create edge
     for i in [0, 21, 22, 23, 24]:
         for j in [0, 11, 12, 13, 14]:
