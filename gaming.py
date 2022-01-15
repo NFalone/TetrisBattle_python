@@ -87,22 +87,6 @@ blockframe = [[[0, 0, 0, 0],  #block0 紅Z  0
                [0, 0, 0, 0]]]
 block_site = [0, 2, 6, 7, 9, 11, 15]
 
-def block_merge(block, frame_backgroundOut):  #merge 2Darray and check the block
-    global frame_background, frame_backgroundTemp, threads_screen
-    x = get_siteX()
-    y = get_siteY()
-    for i in range(4):
-        for j in range(4):
-            frame_backgroundOut[y+i][x+j] = frame_background[y+i][x+j] + block[i][j]
-            #merge fail
-            if frame_backgroundOut[y+i][x+j] > 1:  #jump over the screen update
-                return "JumpOver"
-    #merge success
-    for i in range(25):
-        for j in range(15):
-            frame_backgroundTemp[i][j] = frame_backgroundOut[i][j]
-    threads_screen.start()
-
 def Gaming(block_img, base):
     global frame_background, frame_backgroundTemp, threads_merge, threads_screen
     frame_background = [[0 for j in range(15)] for i in range(25)] #the frame of background (column 1L4R  row 1T4B)
@@ -135,7 +119,21 @@ def block_generate(block_next):  #geterate new block color number
     frame_backgroundTemp[25] = block_now
     return block_next, block_now
 
-
+def block_merge(block, frame_backgroundOut):  #merge 2Darray and check the block
+    global frame_background, frame_backgroundTemp, threads_screen
+    x = get_siteX()
+    y = get_siteY()
+    for i in range(4):
+        for j in range(4):
+            frame_backgroundOut[y+i][x+j] = frame_background[y+i][x+j] + block[i][j]
+            #merge fail
+            if frame_backgroundOut[y+i][x+j] > 1:  #jump over the screen update
+                return "JumpOver"
+    #merge success
+    for i in range(25):
+        for j in range(15):
+            frame_backgroundTemp[i][j] = frame_backgroundOut[i][j]
+    threads_screen.start()
 
 def block_set(out_merge):
     global frame_background
