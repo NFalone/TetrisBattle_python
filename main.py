@@ -92,10 +92,9 @@ def main():
     threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img)))
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
     threads.append(threading.Thread(target=prepare, args=(base, btn, cd_num)))
-    threads.append(threading.Thread(target=Gaming, args=(threads, block_img)))
-    threads.append(0)  #for screen update
+    threads.append(threading.Thread(target=Gaming, args=(block_img)))
 
-    threads[0].start()
+    initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img)
 
     root.mainloop()
 
