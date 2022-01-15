@@ -1,3 +1,4 @@
+import tkinter as tk
 import random, threading
 
 from control import get_siteX, get_siteY, get_switch, set_siteX, set_siteY
@@ -86,35 +87,8 @@ blockframe = [[[0, 0, 0, 0],  #block0 紅Z  0
                [0, 0, 0, 0]]]
 block_site = [0, 2, 6, 7, 9, 11, 15]
 
-def Gaming(block_img):
-    global frame_backgroundTemp
-    frame_background = [[0 for j in range(15)] for i in range(25)] #the frame of background (column 1L4R  row 1T4B)
-    frame_background.append(0)  #frame_background[25] = color info
-    frame_backgroundTemp = [[0 for j in range(15)] for i in range(25)] #the status before event
-    frame_backgroundTemp.append(0)
-    frame_backgroundOut = [[0 for j in range(15)] for i in range(25)] #after event
-    frame_backgroundOut.append(0)
-
-    # threads_screen = threading.Thread(target=ScreenUpdate, args=(block_img))
-    for i in [0, 21, 22, 23, 24]:  #create edge
-        for j in [0, 11, 12, 13, 14]:
-            frame_background[i][j] = 1
-#start
-    block_next = random.randint(0,6)  #general new block color number(in next)
-    while get_switch() == 1:
-        blocknext, block_now = block_generate(block_next)
-        frame_background[25] = block_now
-        block = blockframe[block_site[block_now]]
-        out_merge = block_merge(frame_background, frame_backgroundTemp, frame_backgroundOut, block)
-
-def block_generate(block_next):  #geterate new block color number
-    set_siteX(4)
-    set_siteY(1)
-    block_now = block_next
-    block_next = random.randint(0,6)
-    return block_next, block_now
-
-def block_merge(frame_background, frame_backgroundTemp, frame_backgroundOut, block):  #merge 2Darray and check the block
+def block_merge(block, frame_backgroundOut):  #merge 2Darray and check the block
+    global frame_background, frame_backgroundTemp, threads_screen
     x = get_siteX()
     y = get_siteY()
     for i in range(4):
@@ -122,32 +96,66 @@ def block_merge(frame_background, frame_backgroundTemp, frame_backgroundOut, blo
             frame_backgroundOut[y+i][x+j] = frame_background[y+i][x+j] + block[i][j]
             #merge fail
             if frame_backgroundOut[y+i][x+j] > 1:  #jump over the screen update
-                for i in range(y, 25):
-                    for j in range(x, x+4):
-                        
-                        pass
-                
                 return "JumpOver"
-    #else : output the merge result
-    return frame_backgroundOut
+    #merge success
+    for i in range(25):
+        for j in range(15):
+            frame_backgroundTemp[i][j] = frame_backgroundOut[i][j]
+    threads_screen.start()
 
-def block_set(out_merge, frame_background):
+def Gaming(block_img, base):
+    global frame_background, frame_backgroundTemp, threads_merge, threads_screen
+    frame_background = [[0 for j in range(15)] for i in range(25)] #the frame of background (column 1L4R  row 1T4B)
+    frame_background.append(0)  #frame_background[25] = color info
+    frame_backgroundTemp = [[0 for j in range(15)] for i in range(25)] #the status before event
+    frame_backgroundTemp.append(0)
+    frame_backgroundOut = [[0 for j in range(15)] for i in range(25)] #after event
+    frame_backgroundOut.append(0)
+    #declare variable for threading to passing argument
+    block = blockframe[0]
+    threads_merge = threading.Thread(target=block_merge, args=(block, frame_backgroundOut))
+    threads_screen = threading.Thread(target=ScreenUpdate, args=(frame_backgroundTemp, block_img, base))
+    for i in [0, 21, 22, 23, 24]:  #create edge
+        for j in [0, 11, 12, 13, 14]:
+            frame_background[i][j] = 1
+#start
+    block_next = random.randint(0,6)  #general new block color number(in next)
+    while get_switch() == 1:
+        blocknext, block_now = block_generate(block_next)
+        block = blockframe[block_site[block_now]]
+        block_merge(block, frame_backgroundOut)
+
+def block_generate(block_next):  #geterate new block color number
+    global frame_background, frame_backgroundTemp
+    set_siteX(4)
+    set_siteY(1)
+    block_now = block_next
+    block_next = random.randint(0,6)
+    frame_background[25] = block_now
+    frame_backgroundTemp[25] = block_now
+    return block_next, block_now
+
+
+
+def block_set(out_merge):
+    global frame_background
     x = get_siteX()
     y = get_siteY()
     pass
 
-def ScreenUpdate(out_merge):  #update the image on screen
-    if out_merge == "JumpOver":
+def ScreenUpdate(frame_backgroundTemp, block_img, base):  #update the image on screen
+    if frame_backgroundTemp == "JumpOver":
         return
     else:
         for i in range(20):
             for j in range(10):
-                pass
+                base.itemconfig(block_img[frame_backgroundTemp[25]][i][j], status=tk.DISABLED)
 
 def timing():  #move down per second
     pass
 
 def core(who):
+    global threads_merge
     if who == "rotate":
         pass
     elif who == "drop":
@@ -155,6 +163,7 @@ def core(who):
         pass
     elif who == "left":
         set_siteX(get_siteX() - 1)
+        threads_merge.start()
         pass
     elif who == "right":
         set_siteX(get_siteX() + 1)
