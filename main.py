@@ -1,9 +1,8 @@
 import tkinter as tk
 import threading
 
-from control import drop, go, hold_block, left_shift, right_shift, rotate, set_block
-from core import  Gaming
-from func import StartButton, initial, pic_decode, prepare
+from gaming import Gaming, drop, hold_block, left_shift, right_shift, rotate, set_block
+from func import StartButton, go, initial, pic_decode, prepare
 from pic import *
 
 def main():
@@ -30,22 +29,43 @@ def main():
 #time image load
     pic_temp = [0 for i in range(10)]
     time_num = [[0 for i in range(10)] for j in range(4)]
-    pic_temp[0] = pic_decode(dig0)
-    pic_temp[1] = pic_decode(dig1)
-    pic_temp[2] = pic_decode(dig2)
-    pic_temp[3] = pic_decode(dig3)
-    pic_temp[4] = pic_decode(dig4)
-    pic_temp[5] = pic_decode(dig5)
-    pic_temp[6] = pic_decode(dig6)
-    pic_temp[7] = pic_decode(dig7)
-    pic_temp[8] = pic_decode(dig8)
-    pic_temp[9] = pic_decode(dig9)
+    dig = [dig0, dig1, dig2, dig3, dig4, dig5, dig6, dig7, dig8, dig9]
+    for i in range(10):
+        pic_temp[i] = pic_decode(dig[i])
     pos = [0, 1, 2.5, 3.5]
     for site in pos:
         for i in range(10):
             time_num[pos.index(site)][i] = base.create_image(307+(35*site), 44, anchor=tk.CENTER, image=pic_temp[i], state=tk.DISABLED)
     pic_colon = pic_decode(colon)
     base.create_image(315+(35*1.5), 44, anchor=tk.CENTER, image=pic_colon, state=tk.DISABLED)
+#block image load
+    pic_block = [0 for i in range(7)]
+    block_img = [[[0 for i in range(10)] for j in range(20)] for k in range(7)]
+    remote_block_img = [[[0 for i in range(10)] for j in range(20)] for k in range(7)]
+    colorblock = [block_red, block_orange, block_yellow, block_green, block_lightblue, block_blue, block_purple]
+    for i in range(7):
+        pic_block[i] = pic_decode(colorblock[i])
+    for k in range(7):
+        for i in range(20):
+            for j in range(10):
+                block_img[k][i][j] = base.create_image(87+(18*j), 123+(18*i), anchor=tk.NW, image=pic_block[k], state=tk.DISABLED)
+                remote_block_img[k][i][j] = base.create_image(457+(18*j), 123+(18*i), anchor=tk.NW, image=pic_block[k], state=tk.DISABLED)
+#next image load 292 144
+    pic_blocknext = [0 for i in range(7)]
+    next_img = [0 for i in range(7)]
+    remote_next_img = [0 for i in range(7)]
+    zlqsijt = [Z, L, Q, S, I, J, T]
+    for i in range(7):
+        pic_blocknext[i] = pic_decode(zlqsijt[i])
+    for i in range(7):
+        next_img[i] = base.create_image(292, 144, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
+        remote_next_img[i] = base.create_image(663, 146, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
+#hold image load with next
+    hold_img = [0 for i in range(7)]
+    remote_hold_img = [0 for i in range(7)]
+    for i in range(7):
+        hold_img[i] = base.create_image(20, 143, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
+        remote_hold_img[i] = base.create_image(391, 145, anchor=tk.NW, image=pic_blocknext[i], state=tk.DISABLED)
 #count down 3 seconds
     pic_temp2 = [0 for i in range(4)]
     cd_num = [0 for i in range(4)]
@@ -57,7 +77,7 @@ def main():
         cd_num[i] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_temp2[i], state=tk.DISABLED)
 
 #operate bind
-    base.bind("<Button-1>", go) #press the button
+    root.bind("<Button-1>", go) #press the button
     root.bind("<Up>", rotate) #旋轉方塊
     root.bind("<Down>", drop) #下降方塊
     root.bind("<Left>", left_shift) #左移方塊
@@ -68,12 +88,11 @@ def main():
 
 #threading
     threads = []
-    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num)))
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
     threads.append(threading.Thread(target=prepare, args=(base, btn, cd_num)))
-    threads.append(threading.Thread(target=Gaming, args=()))
+    threads.append(threading.Thread(target=Gaming, args=(block_img)))
 
-    threads[0].start()
+    initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img)
 
     root.mainloop()
 

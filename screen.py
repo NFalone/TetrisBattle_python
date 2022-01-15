@@ -1,2 +1,1 @@
-def ScreenUpdate():
-    pass
+#proccess image with another player
