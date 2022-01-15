@@ -1,9 +1,8 @@
 import tkinter as tk
 import threading
 
-from control import drop, go, hold_block, left_shift, right_shift, rotate, set_block
-from core import Gaming
-from func import StartButton, initial, pic_decode, prepare
+from gaming import Gaming, drop, hold_block, left_shift, right_shift, rotate, set_block
+from func import StartButton, go, initial, pic_decode, prepare
 from pic import *
 
 def main():
@@ -89,7 +88,6 @@ def main():
 
 #threading
     threads = []
-    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img)))
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
     threads.append(threading.Thread(target=prepare, args=(base, btn, cd_num)))
     threads.append(threading.Thread(target=Gaming, args=(block_img)))

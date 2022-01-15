@@ -13,8 +13,12 @@ print(array2d)
 
 def chvar(x):
     x = 10
-    return x
+    z = 10
+    return x, z
 
 x = 5
 y = chvar(x)
-print(x, y)
+print(x, type(y))
+
+a, b = y
+print(a, b)

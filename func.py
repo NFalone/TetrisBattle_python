@@ -2,7 +2,9 @@ import base64, time
 import tkinter as tk
 from io import BytesIO
 from PIL import Image, ImageTk
-from control import *
+
+from control import get_switch, set_switch
+
 
 def pic_decode(data):
     return ImageTk.PhotoImage(Image.open(BytesIO(base64.b64decode(data))))
@@ -29,8 +31,12 @@ def StartButton(threads, root, base, btn):
             base.itemconfig(btn[1], state=tk.HIDDEN)
             base.itemconfig(btn[2], state=tk.DISABLED)
             time.sleep(0.5)
-            threads[2].start()
+            threads[1].start()
             break
+
+def go(event):
+    if((event.x>=98) and (event.x<=256) and (event.y>=194) and (event.y<=244) and (get_switch() == 0)):
+        set_switch(1)
 
 def prepare(base, btn, cd_num): #after press the button
     base.itemconfig(btn[2], state=tk.HIDDEN)
@@ -62,7 +68,4 @@ def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_i
                 base.itemconfig(block_img[k][i][j], state=tk.HIDDEN)
                 base.itemconfig(remote_block_img[k][i][j], state=tk.HIDDEN)
 
-    threads[1].start()
-
-def clock():
-    pass
+    threads[0].start()

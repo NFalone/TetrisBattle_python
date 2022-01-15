@@ -1,32 +1,23 @@
 switch = 0
+site_x = 4
+site_y = 1
 
-def go(event):
-    global switch
-    if((event.x>=98) and (event.x<=256) and (event.y>=194) and (event.y<=244) and (switch == 0)):
-        switch = 1
-
-def rotate(event):
-    pass
-
-def drop(event):
-    pass
-
-def left_shift(event):
-    pass
-
-def right_shift(event):
-    pass
-
-def set_block(event):
-    pass
-
-def hold_block(event):
-    pass
-
-#argument transport
+#passing argument
 def set_switch(val):
     global switch
     switch = val
 def get_switch():
     global switch
     return switch
+def set_siteX(val):
+    global site_x
+    site_x = val
+def get_siteX():
+    global site_x
+    return site_x
+def set_siteY(val):
+    global site_y
+    site_y = val
+def get_siteY():
+    global site_y
+    return site_y
