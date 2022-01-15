@@ -11,7 +11,8 @@ def get_switch():
     return switch
 def set_siteX(val):
     global site_x
-    if val >= 0 and val <= 20:
+    if val >= 0 and val <= 10:
+        print(val)
         site_x = val
 def get_siteX():
     global site_x
