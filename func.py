@@ -16,6 +16,7 @@ def StartButton(threads, root, base, btn):
     base.itemconfig(btn[2], state=tk.HIDDEN)
 #detect
     while True:
+        time.sleep(0.01)
         #mouse position in window
         x = root.winfo_pointerx() - root.winfo_rootx()
         y = root.winfo_pointery() - root.winfo_rooty()
@@ -38,7 +39,7 @@ def go(event):
     if((event.x>=98) and (event.x<=256) and (event.y>=194) and (event.y<=244) and (get_switch() == 0)):
         set_switch(1)
 
-def prepare(base, btn, cd_num): #after press the button
+def prepare(threads, base, btn, cd_num): #after press the button
     base.itemconfig(btn[2], state=tk.HIDDEN)
     base.itemconfig(cd_num[3], state=tk.DISABLED)
     for i in range(3, 0, -1):
@@ -47,6 +48,7 @@ def prepare(base, btn, cd_num): #after press the button
         base.itemconfig(cd_num[i-1], state=tk.DISABLED)
     time.sleep(0.5)
     base.itemconfig(cd_num[0], state=tk.HIDDEN)
+    threads[2].start()
 
 
 def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img): #initial all
