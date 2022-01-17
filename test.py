@@ -39,13 +39,13 @@ from bisect import bisect_left
 def binary_search(a, x): 
     i = bisect_left(a, x) 
     if i: 
-        return (i-1) 
+        return (i) 
     else: 
         return -1
   
 # Driver code 
 a  = [0, 2, 6, 7, 9, 11, 15]
-x = int(7) 
+x = int(16) 
 res = binary_search(a, x) 
 if res == -1: 
     print("There is no value smaller than", x) 

@@ -1,7 +1,7 @@
 import tkinter as tk
 import threading
 
-from gaming import Gaming, drop, hold_block, left_shift, right_shift, rotate, set_block
+from gaming import Gaming, drop, left_shift, right_shift, rotate, set_block, timing
 from func import StartButton, go, initial, pic_decode, prepare
 from pic import *
 
@@ -26,6 +26,8 @@ def main():
     btn[1] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnHover, state=tk.DISABLED)
     pic_btnActive = pic_decode(button_active)
     btn[2] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnActive, state=tk.DISABLED)
+    pic_tick = pic_decode(tick)
+    tick_img = base.create_image(28, 93, anchor=tk.NW, image=pic_tick, state=tk.DISABLED)
 #time image load
     pic_temp = [0 for i in range(10)]
     time_num = [[0 for i in range(10)] for j in range(4)]
@@ -83,16 +85,17 @@ def main():
     root.bind("<Left>", left_shift) #左移方塊
     root.bind("<Right>", right_shift) #右移方塊
     root.bind("<space>", set_block) #放置方塊
-    root.bind("<Shift_L>", hold_block)  #保留方塊
+    # root.bind("<Shift_L>", hold_block)  #保留方塊 bug
     
 
 #threading
     threads = []
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
     threads.append(threading.Thread(target=prepare, args=(threads, base, btn, cd_num)))
-    threads.append(threading.Thread(target=Gaming, args=(block_img, next_img, base, root)))
+    threads.append(threading.Thread(target=Gaming, args=(block_img, next_img, base, root, tick_img, hold_img)))
+    threads.append(threading.Thread(target=timing, args=()))
 
-    initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img)
+    initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img)
 
     root.mainloop()
 

@@ -3,7 +3,7 @@ import tkinter as tk
 from io import BytesIO
 from PIL import Image, ImageTk
 
-from control import get_switch, set_switch
+from control import get_switch, set_hold, set_switch
 
 
 def pic_decode(data):
@@ -49,9 +49,10 @@ def prepare(threads, base, btn, cd_num): #after press the button
     time.sleep(0.5)
     base.itemconfig(cd_num[0], state=tk.HIDDEN)
     threads[2].start()
+    threads[3].start()
 
 
-def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img): #initial all
+def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img): #initial all
     for i in range(4):
         base.itemconfig(cd_num[i], state=tk.HIDDEN)
         for j in range(10):
@@ -69,5 +70,7 @@ def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_i
             for j in range(10):
                 base.itemconfig(block_img[k][i][j], state=tk.HIDDEN)
                 base.itemconfig(remote_block_img[k][i][j], state=tk.HIDDEN)
+    base.itemconfig(tick_img, state=tk.HIDDEN)
+    set_hold(0)
 
     threads[0].start()
