@@ -120,7 +120,7 @@ def Gaming(arg_block_img, arg_base):
 def block_generate(block_next):  #geterate new block color number
     global frame_background, frame_backgroundTemp
     set_siteX(4)
-    set_siteY(1)
+    set_siteY(0)
     block_now = block_next
     block_next = random.randint(0,6)
     frame_background[25] = block_now
@@ -141,12 +141,11 @@ async def block_merge(block, block_img, base):  #merge 2Darray and check the blo
             if frame_out[y+i][x+j] > 1:
                 print("fail")
                 return
-        print(frame_out[i])
     #merge success
     for i in range(25):
         for j in range(15):
             frame_backgroundTemp[i][j] = frame_out[i][j]
-        # print(frame_backgroundTemp[i])
+        print(frame_backgroundTemp[i])
     ScreenUpdate(frame_backgroundTemp, block_img, base)
 
 def block_set(out_merge):  #set and generate
