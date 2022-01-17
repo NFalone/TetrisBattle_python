@@ -48,6 +48,14 @@ class PGinternet():
 				thread = Thread(target = self.__figthing, args = (sock, n))
 				thread.start()
 				break
+			else:
+				try:
+					text = eval(data)
+					self.__getRecv.append(data)
+					thread = Thread(target = self.__figthing, args = (sock, n))
+					thread.start()
+					break
+				except: pass
 			sleep(self.__updateTime)
 
 	def __figthing(self, sock, n):

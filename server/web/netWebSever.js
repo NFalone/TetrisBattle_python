@@ -86,7 +86,14 @@ class bettel
 					ok.push(agent);
 				}
 			}
-			else continue;
+			else
+			{
+				if(!!agent.write && !!systemData.playing[ID])
+				{
+					agent.write("linked");
+					systemData.playing[ID].write("linked");
+				}
+			}
 		}
 		ok.reverse();
 		for(let done of ok) systemData.agent.splice(systemData.agent.indexOf(done), 1);
