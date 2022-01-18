@@ -33,21 +33,52 @@
 # frame.bind("<KeyRelease>", keyup)
 # frame.pack()
 # frame.focus_set()
-# root.mainloop()
-from bisect import bisect_left 
+# # root.mainloop()
+# from bisect import bisect_left 
   
-def binary_search(a, x): 
-    i = bisect_left(a, x) 
-    if i: 
-        return (i) 
-    else: 
-        return -1
+# def binary_search(a, x): 
+#     i = bisect_left(a, x) 
+#     if i: 
+#         return (i) 
+#     else: 
+#         return -1
   
-# Driver code 
-a  = [0, 2, 6, 7, 9, 11, 15]
-x = int(16) 
-res = binary_search(a, x) 
-if res == -1: 
-    print("There is no value smaller than", x) 
-else: 
-    print("Largest value smaller than", x, " is at index", res) 
+# # Driver code 
+# a  = [0, 2, 6, 7, 9, 11, 15]
+# x = int(16) 
+# res = binary_search(a, x) 
+# if res == -1: 
+#     print("There is no value smaller than", x) 
+# else: 
+#     print("Largest value smaller than", x, " is at index", res) 
+# https://ithelp.ithome.com.tw/articles/10254439
+import threading
+import time
+
+lock = threading.Lock()  # 廁所門的鑰匙(lock)
+toilet = []  # 放屎的馬桶(list)
+
+# 廁所(function)
+def WC():
+    lock.acquire()  # 使用鑰匙將廁所門上鎖
+
+    # toilet.append(f"{threading.current_thread().name}: 拉了第1坨屎")  # 將當前的人(線程)所拉的第一屎放進馬桶(list)中
+    st = f"{threading.current_thread().name}: 拉了第1坨屎"
+    toiledadd(st)
+    time.sleep(0.1)
+    # toilet.append(f"{threading.current_thread().name}: 拉了第2坨屎")  # 將當前的人(線程)所拉的第二屎放進馬桶(list)中
+    st = f"{threading.current_thread().name}: 拉了第2坨屎"
+    toiledadd(st)
+
+    lock.release()  # 將廁所門解鎖, 並把鑰匙放在旁邊等下一個人來拿
+
+def toiledadd(val):
+    toilet.append(val)
+
+# 產生3位排隊大號的人
+for i in range(3):
+    wc_thread = threading.Thread(target=WC)
+    wc_thread.start()  # 第 i 個人開始進廁所大號
+
+time.sleep(1)  # 等待一秒確保三個人都上完廁所, 且馬桶內都有他們排放的屎了
+print(toilet)  # 將馬桶內的屎打印出來看排序
