@@ -92,12 +92,11 @@ part2 = {"1":0, "0":1, "3":2, "4":3, "5":4, "2":5, "6":6, "8":7, "7":8, "10":9, 
 block_imgData = [[[0 for i in range(10)] for j in range(20)] for k in range(7)]
 re_img = False
 safe = True
-# lock = threading.RLock()
 
 net_go = get_netGo()
 
-def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_hold_img, arg_score_num):
-    global frame_background, frame_backgroundTemp, frame_out, block_img, next_img, base, block_next, root, block_now, blockStatus, tick_img, hold_img, score_num
+def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_hold_img, arg_score_num, arg_threads):
+    global frame_background, frame_backgroundTemp, frame_out, block_img, next_img, base, block_next, root, block_now, blockStatus, tick_img, hold_img, score_num, threads
     block_img = arg_block_img
     base = arg_base
     next_img = arg_next_img
@@ -105,6 +104,7 @@ def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_ho
     tick_img = arg_tick_img
     hold_img = arg_hold_img
     score_num = arg_score_num
+    threads = arg_threads
     frame_background = [[0 for j in range(15)] for i in range(25)] #the frame of background (column 1L4R  row (1T)4B)
     frame_background.append(0)  #frame_background[25] = color info
     frame_backgroundTemp = [[0 for j in range(15)] for i in range(25)] #the status before event
@@ -135,11 +135,11 @@ def block_generate(block_next):  #geterate new block color number and update ima
     time.sleep(0.1)
     set_siteX(4)
     set_siteY(0)
-    # set_holdCount(0)
+    set_holdCount(0)
     base.itemconfig(next_img[block_next], state=tk.HIDDEN)
     block_now = block_next
     block_next = random.randint(0,6)
-    net_go.send(block_next)
+    net_go.send([11, block_next])
     frame_background[25] = block_now
     frame_backgroundTemp[25] = block_now
     frame_out[25] = block_now
@@ -150,7 +150,7 @@ def block_generate(block_next):  #geterate new block color number and update ima
     return block_next, block_now
 
 def block_merge(call):  #merge 2Darray and check the block
-    global frame_background, frame_backgroundTemp, frame_out, block_img, base, block_next, block, part2, block_now, block, blockStatus, safe
+    global frame_background, frame_backgroundTemp, frame_out, block_img, base, block_next, block, part2, block_now, block, blockStatus, safe, threads
     # lock.acquire()
     for i in range(1, 21):
         for j in range(1, 11):
@@ -162,18 +162,14 @@ def block_merge(call):  #merge 2Darray and check the block
             frame_out[y+i][x+j] = frame_background[y+i][x+j] + block[i][j]
             #merge fail
             if frame_out[y+i][x+j] > 1:
-                print("fail")
                 if call == "left":
                     set_siteX(get_siteX() + 1)
-                    # lock.release()
                     return
                 elif call == "right":
                     set_siteX(get_siteX() - 1)
-                    # lock.release()
                     return
                 elif call == "drop" or call == "set":
                     set_siteY(get_siteY() - 1)
-                    #recursive
                     block_merge("drop")
                     for i in range(1, 21):
                         for j in range(1, 11):
@@ -181,21 +177,19 @@ def block_merge(call):  #merge 2Darray and check the block
                     safe = False
                     block_next, block_now = block_generate(block_next)
                     block = blockframe[block_site[block_now]]
-                    # lock.release()
                     return False
                 elif call == "rotate":
                     blockStatus = part2[str(blockStatus)]
                     block = blockframe[blockStatus]
-                    # lock.release()
                     return
                 elif call == "game":
                     safe = True
                     set_switch(0)
+                    threads[0].start()
     #merge success
     for i in range(1, 21):
         for j in range(1, 11):
             frame_backgroundTemp[i][j] = frame_out[i][j]
-        print(frame_backgroundTemp[i])
     if call == "left" or call == "right" or call == "game":
         ScreenUpdate(frame_backgroundTemp)
         safe = True
@@ -204,14 +198,11 @@ def block_merge(call):  #merge 2Darray and check the block
     elif call == "rotate":
         ScreenUpdate(frame_backgroundTemp)
     elif call == "set":
-        # lock.release()
         return True
-    # lock.release()
     return
 
 def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
     global block_img, base, root, re_img, score_num
-    # lock.acquire()
     for i in range(20):
         for j in range(10):
             if frame_backgroundTemp[1+i][1+j]-frame_background[1+i][1+j] == 1:
@@ -229,10 +220,9 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
     net_go.send(block_imgData)
 
     for i in range(1, 20):
-        # print(frame_background[i])
         if frame_background[1+i].count(1) == 15:  #a line
             set_score(get_score() + 1)
-            net_go.send(get_score())
+            net_go.send([12, get_score()])
             re_img = True
             for n in range(i, 1, -1):
                 for j in range(10):
@@ -258,14 +248,11 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
         root.update()
         net_go.send(block_imgData)
         re_img = False
-    # lock.release()
 
 def timing():  #drop block per second
-    # global re_img
     while get_switch() == 1:
         time.sleep(1)
         if safe:
-        # asyncio.run(block_merge("drop"))
             core("drop")
 
 async def tick():
@@ -300,24 +287,11 @@ def tick_proccess():
             base.itemconfig(hold_img[hold_temp], state=tk.DISABLED)
             blockStatus = block_site[frame_backgroundTemp[25]]
             block = blockframe[blockStatus]
-            #update image
             block_merge("game")
-            # for i in range(1, 21):
-            #     for j in range(1, 11):
-            #         frame_out[i][j] = frame_background[i][j]
-            # frame_out[25] = frame_backgroundTemp[25]
-            # ScreenUpdate(frame_out)
-            x = get_siteX()
-            y = get_siteY()
-            for i in range(4):
-                for j in range(4):
-                    frame_out[y+i][x+j] = frame_background[y+i][x+j] + block[i][j]
-            ScreenUpdate(frame_out)
 
 def core(who):
     global threads_merge, frame_backgroundOut, block, block_now, block_site, part, blockStatus, tick_img, safe
     # loop = asyncio.get_event_loop()
-    # lock.acquire()
     if who == "rotate" and safe:
         blockStatus = part[str(blockStatus)]
         block = blockframe[blockStatus]
@@ -346,7 +320,6 @@ def core(who):
             # loop.run_until_complete(tasks_set)
             # ans = tasks_set.result()
 
-    # lock.release()
     # elif who == "hold":
     #     asyncio.run(tick())
     #     # tasks_hold = loop.create_task(tick())

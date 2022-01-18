@@ -4,6 +4,7 @@ import threading
 from gaming import Gaming, drop, hold_block, left_shift, right_shift, rotate, set_block, timing
 from func import StartButton, go, initial, pic_decode, prepare
 from pic import *
+from remote import remote, remoteScreen
 
 def main():
 #window basic option
@@ -18,14 +19,7 @@ def main():
     base.pack()
 #image load
     pic_back = pic_decode(Background)
-    pic_background = base.create_image(0, 0, anchor=tk.NW, image=pic_back, state=tk.DISABLED)
-    btn = [0 for i in range(3)]
-    pic_btnStart = pic_decode(button_start)
-    btn[0] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnStart, state=tk.DISABLED)
-    pic_btnHover = pic_decode(button_hover)
-    btn[1] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnHover, state=tk.DISABLED)
-    pic_btnActive = pic_decode(button_active)
-    btn[2] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnActive, state=tk.DISABLED)
+    base.create_image(0, 0, anchor=tk.NW, image=pic_back, state=tk.DISABLED)
     pic_tick = pic_decode(tick)
     tick_img = base.create_image(28, 93, anchor=tk.NW, image=pic_tick, state=tk.DISABLED)
 #time image load
@@ -92,6 +86,15 @@ def main():
         for j in range(10):
             remote_score_num[i][j] = base.create_image(397+(i*20), 339, anchor=tk.CENTER, image=pic_digL[j], state=tk.DISABLED)
 
+#start button image load
+    btn = [0 for i in range(3)]
+    pic_btnStart = pic_decode(button_start)
+    btn[0] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnStart, state=tk.DISABLED)
+    pic_btnHover = pic_decode(button_hover)
+    btn[1] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnHover, state=tk.DISABLED)
+    pic_btnActive = pic_decode(button_active)
+    btn[2] = base.create_image(177, 220, anchor=tk.CENTER, image=pic_btnActive, state=tk.DISABLED)
+
 
 #operate bind
     root.bind("<Button-1>", go) #press the button
@@ -107,8 +110,11 @@ def main():
     threads = []
     threads.append(threading.Thread(target=StartButton, args=(threads, root, base, btn)))
     threads.append(threading.Thread(target=prepare, args=(threads, base, btn, cd_num)))
-    threads.append(threading.Thread(target=Gaming, args=(block_img, next_img, base, root, tick_img, hold_img, score_num)))
+    threads.append(threading.Thread(target=Gaming, args=(block_img, next_img, base, root, tick_img, hold_img, score_num, threads)))
     threads.append(threading.Thread(target=timing, args=()))
+    threads.append(threading.Thread(target=remote, args=()))
+    threads.append(threading.Thread(target=remoteScreen, args=(root, base, remote_block_img, remote_next_img, remote_score_num, time_num)))
+    threads.append(threading.Thread(target=initial, state=(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)))
 
     initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)
 

@@ -3,7 +3,7 @@ import tkinter as tk
 from io import BytesIO
 from PIL import Image, ImageTk
 
-from control import get_switch, set_hold, set_switch
+from control import get_switch, set_hold, set_score, set_switch
 from PGinternet import PGinternet
 
 net_go = PGinternet(IP='zephyrouo.ddns.net', host=9487, updateTime=0.005)
@@ -13,6 +13,7 @@ def pic_decode(data):
 
 def StartButton(threads, root, base, btn):
 #initial
+    threads[6].start()
     base.itemconfig(btn[0], state=tk.HIDDEN)
     base.itemconfig(btn[1], state=tk.HIDDEN)
     base.itemconfig(btn[2], state=tk.HIDDEN)
@@ -34,14 +35,25 @@ def StartButton(threads, root, base, btn):
             base.itemconfig(btn[1], state=tk.HIDDEN)
             base.itemconfig(btn[2], state=tk.DISABLED)
             time.sleep(0.5)
+            while True:
+                time.sleep(0.1)
+                if net_go.gameStart:
+                    break
             threads[1].start()
+            threads[4].start()
+            threads[5].start()
             break
 
-
+IO_go = True
 def go(event):
-    if((event.x>=98) and (event.x<=256) and (event.y>=194) and (event.y<=244) and (get_switch() == 0)):
+    global IO_go
+    if((event.x>=98) and (event.x<=256) and (event.y>=194) and (event.y<=244) and (get_switch() == 0)) and IO_go:
+        IO_go = False
+        try:
+            net_go.link()
+        except:
+            IO_go = True
         set_switch(1)
-        net_go.link()
 
 def prepare(threads, base, btn, cd_num): #after press the button
     base.itemconfig(btn[2], state=tk.HIDDEN)
@@ -57,6 +69,8 @@ def prepare(threads, base, btn, cd_num): #after press the button
 
 
 def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num): #initial all
+    global IO_go
+    IO_go = True
     for i in range(4):
         base.itemconfig(cd_num[i], state=tk.HIDDEN)
         for j in range(10):
@@ -80,6 +94,7 @@ def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_i
             base.itemconfig(score_num[i][j], state=tk.HIDDEN)
             base.itemconfig(remote_score_num[i][j], state=tk.HIDDEN)
     set_hold(0)
+    set_score(0)
 
     threads[0].start()
 
