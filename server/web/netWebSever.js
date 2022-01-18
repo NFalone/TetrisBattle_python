@@ -80,13 +80,20 @@ class bettel
 					agent.write("plzSent");
 					systemData.playing[ID].write("plzSent");
 
-					systemData.gametime[ID] = systemData.gametime[systemData.playing[ID].remoteAddress + "(" + systemData.playing[ID].remotePort + ")"] = 180;
+					systemData.gametime[ID] = systemData.gametime[systemData.playing[ID].remoteAddress + "(" + systemData.playing[ID].remotePort + ")"] = 120;
 
 					agent["comfirm"] = systemData.playing[ID]["comfirm"] = false;
 					ok.push(agent);
 				}
 			}
-			else continue;
+			else
+			{
+				if(!!agent.write && !!systemData.playing[ID])
+				{
+					agent.write("linked");
+					systemData.playing[ID].write("linked");
+				}
+			}
 		}
 		ok.reverse();
 		for(let done of ok) systemData.agent.splice(systemData.agent.indexOf(done), 1);

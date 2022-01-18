@@ -4,21 +4,19 @@ from threading import Thread
 
 
 class PGinternet():
-	def __init__(self, updateTime = 1):
-		self.__done = True
+	def __init__(self, updateTime = 1, IP = "127.0.0.1", host = 80):
 		self.__execute = True 
 		self.__getRecv = []
 		self.__willSend = []
-		self.__updateTime = int(updateTime)
 		self.__connect_num = 1
+		self.__serverAt = (IP, host)
+		self.__updateTime = int(updateTime)
 
-	def start(self):
+	def link(self):
 		if 1 > self.__connect_num: raise PGerror("connect num must more than 0.")
 
-		self.__done = False
 		system = Thread(target = self.__control)
 		system.start()
-		self.__done = True
 
 	def __control(self):
 		linked = []
@@ -27,7 +25,7 @@ class PGinternet():
 
 		for x in range(self.connect_num):
 			linked[x] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			linked[x].connect(('192.168.88.128', 9487))
+			linked[x].connect(self.__serverAt)
 			thread.append(Thread(target = self.__waitLinked, args = (linked[x], x+1)))
 			thread[len(thread)-1].start()
 
@@ -50,6 +48,14 @@ class PGinternet():
 				thread = Thread(target = self.__figthing, args = (sock, n))
 				thread.start()
 				break
+			else:
+				try:
+					text = eval(data)
+					self.__getRecv.append(data)
+					thread = Thread(target = self.__figthing, args = (sock, n))
+					thread.start()
+					break
+				except: pass
 			sleep(self.__updateTime)
 
 	def __figthing(self, sock, n):
@@ -110,12 +116,12 @@ class PGerror(Exception):
 
 
 if __name__ == "__main__":
-	net = PGinternet(updateTime = 1)
-	net.start()
+	net = PGinternet(updateTime = 1, IP = "192.168.88.128", host = 9487)
+	net.link()
 	#net.updateTime = 1
 
 	while net.done:
-		net.send("[[[[[77777777777]]]]]")
+		net.send("[[[[test used data]]]]")
 		data = net.recv()
 		print(data)
 		sleep(1)
