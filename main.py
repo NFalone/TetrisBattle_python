@@ -114,10 +114,10 @@ def main():
     threads.append(threading.Thread(target=timing, args=()))
     threads.append(threading.Thread(target=remote, args=()))
     threads.append(threading.Thread(target=remoteScreen, args=(root, base, remote_block_img, remote_next_img, remote_score_num, time_num)))
-    threads.append(threading.Thread(target=initial, state=(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)))
+    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)))
 
     initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)
-
+    threads[0].start()
     root.mainloop()
 
 if __name__ == '__main__':

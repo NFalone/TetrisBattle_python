@@ -124,7 +124,7 @@ def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_ho
             frame_out[i][j] = 1
 #start
     block_next = random.randint(0,6)  #general new block color number(in next)
-    net_go.send(block_next)
+    net_go.send([11, block_next])
     base.itemconfig(next_img[block_next], state=tk.DISABLED)
     block_next, block_now = block_generate(block_next)
     while get_switch() == 1:
@@ -217,7 +217,8 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
                 else:
                     base.itemconfig(block_img[k][i][j], state=tk.HIDDEN)
     root.update()
-    net_go.send(block_imgData)
+    for i in range(7):
+        net_go.send([90+i, block_imgData[i]])
 
     for i in range(1, 20):
         if frame_background[1+i].count(1) == 15:  #a line
@@ -246,7 +247,9 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
         base.itemconfig(score_num[1][(get_score()%100)//10], state=tk.DISABLED)
         base.itemconfig(score_num[2][(get_score()%10)//1], state=tk.DISABLED)
         root.update()
-        net_go.send(block_imgData)
+        for i in range(7):
+            time.sleep(0.008)
+            net_go.send([90+i, block_imgData[i]])
         re_img = False
 
 def timing():  #drop block per second

@@ -13,7 +13,6 @@ def pic_decode(data):
 
 def StartButton(threads, root, base, btn):
 #initial
-    threads[6].start()
     base.itemconfig(btn[0], state=tk.HIDDEN)
     base.itemconfig(btn[1], state=tk.HIDDEN)
     base.itemconfig(btn[2], state=tk.HIDDEN)
@@ -31,6 +30,7 @@ def StartButton(threads, root, base, btn):
             base.itemconfig(btn[1], state=tk.HIDDEN)
         #press the button
         if (get_switch() == 1):
+            threads[6].start()
             base.itemconfig(btn[0], state=tk.HIDDEN)
             base.itemconfig(btn[1], state=tk.HIDDEN)
             base.itemconfig(btn[2], state=tk.DISABLED)
@@ -95,8 +95,6 @@ def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_i
             base.itemconfig(remote_score_num[i][j], state=tk.HIDDEN)
     set_hold(0)
     set_score(0)
-
-    threads[0].start()
 
 def get_netGo():
     global net_go
