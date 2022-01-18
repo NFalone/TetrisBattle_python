@@ -20,7 +20,6 @@ class PGinternet():
 
 	def __control(self):
 		self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.__socket.setblocking(False)
 		for linktimes in range(10):
 			try:
 				self.__socket.connect(self.__serverAt)
@@ -28,6 +27,7 @@ class PGinternet():
 			except: sleep(0.5)
 		else:
 			raise PGerror("The server block this request link")
+		self.__socket.setblocking(False)
 				
 		thread = Thread(target = self.__waitLinked)
 		thread.start()
@@ -138,10 +138,10 @@ class PGerror(Exception):
 if __name__ == "__main__":
 	net = PGinternet(updateTime = 1, IP = "192.168.88.128", host = 9487)
 	net.link()
-	#net.updateTime = 1
 
 	while net.done:
-		net.send("[[[[test used data]]]]")
-		data = net.recv()
-		print(data)
-		sleep(1)
+		while net.gameStart:
+			net.send("[[[[test used data]]]]")
+			data = net.recv()
+			print(data)
+			sleep(1)
