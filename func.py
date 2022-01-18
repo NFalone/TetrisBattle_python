@@ -52,7 +52,7 @@ def prepare(threads, base, btn, cd_num): #after press the button
     threads[3].start()
 
 
-def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img): #initial all
+def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num): #initial all
     for i in range(4):
         base.itemconfig(cd_num[i], state=tk.HIDDEN)
         for j in range(10):
@@ -71,6 +71,10 @@ def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_i
                 base.itemconfig(block_img[k][i][j], state=tk.HIDDEN)
                 base.itemconfig(remote_block_img[k][i][j], state=tk.HIDDEN)
     base.itemconfig(tick_img, state=tk.HIDDEN)
+    for i in range(3):
+        for j in range(1, 10):
+            base.itemconfig(score_num[i][j], state=tk.HIDDEN)
+            base.itemconfig(remote_score_num[i][j], state=tk.HIDDEN)
     set_hold(0)
 
     threads[0].start()

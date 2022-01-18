@@ -3,6 +3,7 @@ hold = 0
 hold_count = 0
 site_x = 4
 site_y = 1
+score = 0
 
 #passing argument
 def set_switch(val):
@@ -37,3 +38,9 @@ def set_siteY(val):
 def get_siteY():
     global site_y
     return site_y
+def set_score(val):
+    global score
+    score = val
+def get_score():
+    global score
+    return score
