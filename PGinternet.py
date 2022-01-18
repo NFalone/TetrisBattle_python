@@ -5,7 +5,8 @@ from threading import Thread
 
 class PGinternet():
 	def __init__(self, updateTime = 1, IP = "127.0.0.1", host = 80):
-		self.__execute = True 
+		self.__execute = True
+		self.__linkedserver = False
 		self.__getRecv = []
 		self.__willSend = []
 		self.__connect_num = 1
@@ -15,6 +16,7 @@ class PGinternet():
 	def link(self):
 		if 1 > self.__connect_num: raise PGerror("connect num must more than 0.")
 
+		self.__linkedserver = False
 		system = Thread(target = self.__control)
 		system.start()
 
@@ -60,6 +62,7 @@ class PGinternet():
 
 	def __figthing(self, sock, n):
 		self.__execute = True
+		self.__linkedserver = True
 		threadS = Thread(target = self.__keepSend, args = (sock, n))
 		threadR = Thread(target = self.__keepRecv, args = (sock, n))
 		threadS.start()
@@ -94,6 +97,9 @@ class PGinternet():
 
 	@property
 	def done(self) -> bool: return self.__execute
+
+	@property
+	def gameStart(self) -> bool: return self.__linkedserver
 
 	@property
 	def connect_num(self) -> int: return self.__connect_num
