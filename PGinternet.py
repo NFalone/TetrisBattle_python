@@ -78,7 +78,7 @@ class PGinternet():
 	def __keepRecv(self):
 		while self.__execute:
 			try:
-				data = self.__socket.recv(1000).decode('utf8')
+				data = self.__socket.recv(16383).decode('utf8')
 				self.__getRecv.append(data)
 				gameStatus = data.rfind("time")
 				if gameStatus != -1 and len(data) > gameStatus + 7:
