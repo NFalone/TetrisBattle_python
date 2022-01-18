@@ -5,88 +5,96 @@ from threading import Thread
 
 class PGinternet():
 	def __init__(self, updateTime = 1, IP = "127.0.0.1", host = 80):
+		self.__socket = None
 		self.__execute = True
 		self.__linkedserver = False
 		self.__getRecv = []
 		self.__willSend = []
-		self.__connect_num = 1
 		self.__serverAt = (IP, host)
 		self.__updateTime = int(updateTime)
 
 	def link(self):
-		if 1 > self.__connect_num: raise PGerror("connect num must more than 0.")
-
 		self.__linkedserver = False
 		system = Thread(target = self.__control)
 		system.start()
 
 	def __control(self):
-		linked = []
-		thread = []
-		for x in range(self.connect_num): linked.append("")
-
-		for x in range(self.connect_num):
-			linked[x] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			linked[x].connect(self.__serverAt)
-			thread.append(Thread(target = self.__waitLinked, args = (linked[x], x+1)))
-			thread[len(thread)-1].start()
-
-		#for x in thread: x.join()
-
-	def __waitLinked(self, sock, n):
-		while True:
-			data = sock.recv(1000).decode("utf8")
-			if data.find("linked") != -1:
-				sock.send(b"Start")
-				thread = Thread(target = self.__waitStart, args = (sock, n))
-				thread.start()
+		self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.__socket.setblocking(False)
+		for linktimes in range(10):
+			try:
+				self.__socket.connect(self.__serverAt)
 				break
-			else: sleep(self.__updateTime)
+			except: sleep(0.5)
+		else:
+			raise PGerror("The server block this request link")
+				
+		thread = Thread(target = self.__waitLinked)
+		thread.start()
 
-	def __waitStart(self, sock, n):
+	def __waitLinked(self):
 		while True:
-			data = sock.recv(1000).decode("utf8")
-			if data.find("plzSent") != -1:
-				thread = Thread(target = self.__figthing, args = (sock, n))
-				thread.start()
-				break
-			else:
-				try:
-					text = eval(data)
-					self.__getRecv.append(data)
-					thread = Thread(target = self.__figthing, args = (sock, n))
+			try:
+				data = self.__socket.recv(1000).decode("utf8")
+				if data.find("linked") != -1:
+					self.__socket.send(b"Start")
+					thread = Thread(target = self.__waitStart)
 					thread.start()
 					break
-				except: pass
-			sleep(self.__updateTime)
+				else: sleep(self.__updateTime)
+			except: sleep(self.__updateTime)
 
-	def __figthing(self, sock, n):
+	def __waitStart(self):
+		while True:
+			try:
+				data = self.__socket.recv(1000).decode("utf8")
+				if data.find("plzSent") != -1:
+					thread = Thread(target = self.__figthing)
+					thread.start()
+					break
+				else:
+					if data.find("data") != -1 or data.find("time") != -1:
+						thread = Thread(target = self.__figthing)
+						thread.start()
+						break
+				sleep(self.__updateTime)
+			except: sleep(self.__updateTime)
+
+	def __figthing(self):
 		self.__execute = True
 		self.__linkedserver = True
-		threadS = Thread(target = self.__keepSend, args = (sock, n))
-		threadR = Thread(target = self.__keepRecv, args = (sock, n))
+		threadS = Thread(target = self.__keepSend)
+		threadR = Thread(target = self.__keepRecv)
 		threadS.start()
 		threadR.start()
 
-	def __keepSend(self, sock, n):
+	def __keepSend(self):
 		while self.__execute:
 			while len(self.__willSend) != 0:
 				text = str(self.__willSend.pop(0))
-				sock.send(text.encode('ascii'))
+				self.__socket.send(text.encode('ascii'))
 			sleep(self.__updateTime)
 
-	def __keepRecv(self, sock, n):
-		while True:
-			data = sock.recv(1000).decode('utf8')
-			self.__getRecv.append(data)
+	def __keepRecv(self):
+		while self.__execute:
 			try:
-				data = eval(data)
-				if data["time"] == 0:
-					self.__execute = False
-					self.__linkedserver = False
-					break
-			except: pass
-			sleep(self.__updateTime)
+				data = self.__socket.recv(16383).decode('utf8')
+				self.__getRecv.append(data)
+				gameStatus = data.rfind("time")
+				if gameStatus != -1 and len(data) > gameStatus + 7:
+					if data[gameStatus+6] == "0":
+						self.__execute = False
+						self.__linkedserver = False
+						self.__socket.close()
+						break
+					elif data[gameStatus+6] == " ":
+						if data[gameStatus+7] == "0":
+							self.__execute = False
+							self.__linkedserver = False
+							self.__socket.close()
+							break
+				sleep(self.__updateTime)
+			except: sleep(self.__updateTime)
 
 	def send(self, text): self.__willSend.append(text)
 
@@ -96,6 +104,11 @@ class PGinternet():
 			ans += self.__getRecv.pop(0)
 		return ans
 
+	def shutdown(self):
+		self.__socket.close()
+		self.__execut = False
+		self.__linkedserver = False
+		
 	@property
 	def done(self) -> bool: return self.__execute
 
