@@ -2,6 +2,7 @@ import tkinter as tk
 import random, time, threading, asyncio
 
 from control import get_hold, get_holdCount, get_score, get_siteX, get_siteY, get_switch, set_hold, set_holdCount, set_score, set_siteX, set_siteY, set_switch
+from func import get_netGo
 
 blockframe = [[[0, 0, 0, 0],  #block0 紅Z  0
                [0, 1, 1, 0],
@@ -93,6 +94,8 @@ re_img = False
 safe = True
 # lock = threading.RLock()
 
+net_go = get_netGo()
+
 def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_hold_img, arg_score_num):
     global frame_background, frame_backgroundTemp, frame_out, block_img, next_img, base, block_next, root, block_now, blockStatus, tick_img, hold_img, score_num
     block_img = arg_block_img
@@ -121,10 +124,11 @@ def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_ho
             frame_out[i][j] = 1
 #start
     block_next = random.randint(0,6)  #general new block color number(in next)
+    net_go.send(block_next)
     base.itemconfig(next_img[block_next], state=tk.DISABLED)
     block_next, block_now = block_generate(block_next)
     while get_switch() == 1:
-        time.sleep(1000)  #stop
+        time.sleep(0.1)  #stop
 
 def block_generate(block_next):  #geterate new block color number and update image
     global frame_background, frame_backgroundTemp, frame_out, block_img, base, blockStatus, block
@@ -135,6 +139,7 @@ def block_generate(block_next):  #geterate new block color number and update ima
     base.itemconfig(next_img[block_next], state=tk.HIDDEN)
     block_now = block_next
     block_next = random.randint(0,6)
+    net_go.send(block_next)
     frame_background[25] = block_now
     frame_backgroundTemp[25] = block_now
     frame_out[25] = block_now
@@ -221,11 +226,13 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
                 else:
                     base.itemconfig(block_img[k][i][j], state=tk.HIDDEN)
     root.update()
+    net_go.send(block_imgData)
 
     for i in range(1, 20):
         # print(frame_background[i])
         if frame_background[1+i].count(1) == 15:  #a line
             set_score(get_score() + 1)
+            net_go.send(get_score())
             re_img = True
             for n in range(i, 1, -1):
                 for j in range(10):
@@ -249,6 +256,7 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
         base.itemconfig(score_num[1][(get_score()%100)//10], state=tk.DISABLED)
         base.itemconfig(score_num[2][(get_score()%10)//1], state=tk.DISABLED)
         root.update()
+        net_go.send(block_imgData)
         re_img = False
     # lock.release()
 
@@ -283,7 +291,6 @@ def tick_proccess():
         return
     elif get_hold() == 1:
         if get_holdCount() == 0:
-            print("wwwwwwwwww")
             set_holdCount(1)
             set_siteX(4)
             set_siteY(1)

@@ -4,7 +4,9 @@ from io import BytesIO
 from PIL import Image, ImageTk
 
 from control import get_switch, set_hold, set_switch
+from PGinternet import PGinternet
 
+net_go = PGinternet(IP='zephyrouo.ddns.net', host=9487, updateTime=0.005)
 
 def pic_decode(data):
     return ImageTk.PhotoImage(Image.open(BytesIO(base64.b64decode(data))))
@@ -35,9 +37,11 @@ def StartButton(threads, root, base, btn):
             threads[1].start()
             break
 
+
 def go(event):
     if((event.x>=98) and (event.x<=256) and (event.y>=194) and (event.y<=244) and (get_switch() == 0)):
         set_switch(1)
+        net_go.link()
 
 def prepare(threads, base, btn, cd_num): #after press the button
     base.itemconfig(btn[2], state=tk.HIDDEN)
@@ -78,3 +82,7 @@ def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_i
     set_hold(0)
 
     threads[0].start()
+
+def get_netGo():
+    global net_go
+    return net_go
