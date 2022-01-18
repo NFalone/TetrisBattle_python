@@ -80,7 +80,7 @@ class bettel
 					agent.write("plzSent");
 					systemData.playing[ID].write("plzSent");
 
-					systemData.gametime[ID] = systemData.gametime[systemData.playing[ID].remoteAddress + "(" + systemData.playing[ID].remotePort + ")"] = 120;
+					systemData.gametime[ID] = systemData.gametime[systemData.playing[ID].remoteAddress + "(" + systemData.playing[ID].remotePort + ")"] = 124;
 
 					agent["comfirm"] = systemData.playing[ID]["comfirm"] = false;
 					ok.push(agent);
@@ -157,7 +157,7 @@ const server = net.createServer((socket) =>
 				gameStatus["data"] = data;
 				gameStatus["time"] = gameSystem.gametime[ID];
 	
-				gameSystem.playing[ID].write?.(JSON.stringify(gameStatus));
+				gameSystem.playing[ID]?.write(JSON.stringify(gameStatus));
 
 				if(gameStatus["time"] === 0)
 				{
