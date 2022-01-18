@@ -83,6 +83,7 @@ class PGinternet():
 				data = eval(data)
 				if data["time"] == 0:
 					self.__execute = False
+					self.__linkedserver = False
 					break
 			except: pass
 			sleep(self.__updateTime)
