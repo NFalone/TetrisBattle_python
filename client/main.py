@@ -2,7 +2,7 @@ import tkinter as tk
 import threading, sys
 
 from gaming import Gaming, drop, hold_block, left_shift, right_shift, rotate, set_block, timing
-from func import StartButton, go, initial, pic_decode, prepare
+from func import StartButton, get_netGo, go, initial, pic_decode, prepare
 from pic import *
 from remote import remote
 
@@ -125,6 +125,8 @@ def main():
 def windowclose():
     global root
     root.destroy()
+    net_go = get_netGo()
+    net_go.send([13, 999])
     sys.exit()
 
 if __name__ == '__main__':
