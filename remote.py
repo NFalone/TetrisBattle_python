@@ -16,7 +16,7 @@ passing = False
 def remote(root, base, remote_block_img, remote_next_img, remote_score_num, time_num):
     global data_dic, passing
     while True:
-        time.sleep(0.007)
+        time.sleep(0.02)
         data_dic = net_go.recv()
         if data_dic != "":
             data = data_dic['data']
