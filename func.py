@@ -40,7 +40,6 @@ def StartButton(threads, root, base, btn):
                     break
             threads[1].start()
             threads[4].start()
-            threads[5].start()
             break
 
 IO_go = True

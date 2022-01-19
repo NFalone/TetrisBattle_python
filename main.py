@@ -4,7 +4,7 @@ import threading, sys
 from gaming import Gaming, drop, hold_block, left_shift, right_shift, rotate, set_block, timing
 from func import StartButton, go, initial, pic_decode, prepare
 from pic import *
-from remote import remote, remoteScreen
+from remote import remote
 
 def main():
 #window basic option
@@ -114,7 +114,7 @@ def main():
     threads.append(threading.Thread(target=Gaming, args=(block_img, next_img, base, root, tick_img, hold_img, score_num, threads)))
     threads.append(threading.Thread(target=timing, args=()))
     threads.append(threading.Thread(target=remote, args=(root, base, remote_block_img, remote_next_img, remote_score_num, time_num)))
-    threads.append(threading.Thread(target=remoteScreen, args=(root, base, remote_block_img, remote_next_img, remote_score_num, time_num)))
+
 
     initial(base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)
     threads[0].start()

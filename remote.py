@@ -17,7 +17,7 @@ def remote(root, base, remote_block_img, remote_next_img, remote_score_num, time
     while True:
         time.sleep(0.007)
         data_dic = net_go.recv()
-        print(data_dic)
+        print("echo", data_dic)
         if data_dic != "":
             data = data_dic['data']
             # print(data)
