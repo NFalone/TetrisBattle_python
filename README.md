@@ -1,5 +1,13 @@
 # TetrisBattle\_python
+
+## Client
+
 Game TetrisBattle from Facebook using python tkinter.
+
+#### problem
+- gaming code struct is not in main line
+- event conflict (could add queue later)
+- gaming.py may be refactored
 
 ## Server
 

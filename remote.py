@@ -24,6 +24,10 @@ def remote(root, base, remote_block_img, remote_next_img, remote_score_num, time
             # if data !="":
                 # print("pass_before", data, type(data))
             now = data_dic['time']
+            if now == 0:
+                net_go.send([13, 999])
+                net_go.send([13, 999])
+                net_go.send([13, 999])
             # if type(data) == list:
             # if data[0]!=11 and data[0]!=12 and len(data)>1:
             #     # print("pass_after", data, type(data))
