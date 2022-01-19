@@ -3,7 +3,10 @@ __pycache__/
 pic/
 pic_old/
 trash_can/
+build/
 
 *.jpg
 *.lnk
 *.png
+*.spec
+*.ico
