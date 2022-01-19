@@ -77,24 +77,24 @@ class PGinternet():
 
 	def __keepRecv(self):
 		while self.__execute:
-            		try:
-                		data = self.__socket.recv(16383).decode('utf8')
-                		self.__getRecv.append(data)
-                		gameStatus = data.rfind("time")
-                		if gameStatus != -1 and len(data) > gameStatus + 7:
-                    		if data[gameStatus+6] == "0":
-                        		self.__execute = False
-                        		self.__linkedserver = False
-                        		self.__socket.close()
-                        		break
-                    		elif data[gameStatus+6] == " ":
-                        		if data[gameStatus+7] == "0":
-                            		self.__execute = False
-                            		self.__linkedserver = False
-                            		self.__socket.close()
-                            		break
-                		sleep(self.__updateTime)
-            		except: sleep(self.__updateTime)
+			try:
+				data = self.__socket.recv(16383).decode('utf8')
+				self.__getRecv.append(data)
+				gameStatus = data.rfind("time")
+				if gameStatus != -1 and len(data) > gameStatus + 7:
+					if data[gameStatus+6] == "0":
+						self.__execute = False
+						self.__linkedserver = False
+						self.__socket.close()
+						break
+					elif data[gameStatus+6] == " ":
+						if data[gameStatus+7] == "0":
+							self.__execute = False
+							self.__linkedserver = False
+							self.__socket.close()
+							break
+				sleep(self.__updateTime)
+			except: sleep(self.__updateTime)
 
 	def send(self, text): self.__willSend.append(text)
 

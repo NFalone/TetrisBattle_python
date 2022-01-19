@@ -186,6 +186,7 @@ def block_merge(call):  #merge 2Darray and check the block
                 elif call == "game":
                     safe = True
                     set_switch(0)
+                    net_go.send([13, 999])
                     messagebox.showwarning("End", "請手動重啟以再次遊玩")
     #merge success
     for i in range(1, 21):
@@ -295,33 +296,34 @@ def tick_proccess():
 def core(who):
     global threads_merge, frame_backgroundOut, block, block_now, block_site, part, blockStatus, tick_img, safe
     # loop = asyncio.get_event_loop()
-    if who == "rotate" and safe:
-        blockStatus = part[str(blockStatus)]
-        block = blockframe[blockStatus]
-        # tasks = loop.create_task(block_merge("rotate"))
-        block_merge("rotate")
-    elif who == "game":
-        block_merge("game")
-    elif who == "drop" and safe:
-        set_siteY(get_siteY() + 1)
-        # tasks = loop.create_task(block_merge("drop"))
-        block_merge("drop")
-    elif who == "left" and safe:
-        set_siteX(get_siteX() - 1)
-        # tasks = loop.create_task(block_merge("left"))
-        block_merge("left")
-    elif who == "right" and safe:
-        set_siteX(get_siteX() + 1)
-        # tasks = loop.create_task(block_merge("right"))
-        block_merge("right")
-    elif who == "set" and safe:
-        ans = True
-        while ans:
+    if get_switch() == 1:
+        if who == "rotate" and safe:
+            blockStatus = part[str(blockStatus)]
+            block = blockframe[blockStatus]
+            # tasks = loop.create_task(block_merge("rotate"))
+            block_merge("rotate")
+        elif who == "game":
+            block_merge("game")
+        elif who == "drop" and safe:
             set_siteY(get_siteY() + 1)
-            # tasks_set = loop.create_task(block_merge("set"))
-            ans = block_merge("set")
-            # loop.run_until_complete(tasks_set)
-            # ans = tasks_set.result()
+            # tasks = loop.create_task(block_merge("drop"))
+            block_merge("drop")
+        elif who == "left" and safe:
+            set_siteX(get_siteX() - 1)
+            # tasks = loop.create_task(block_merge("left"))
+            block_merge("left")
+        elif who == "right" and safe:
+            set_siteX(get_siteX() + 1)
+            # tasks = loop.create_task(block_merge("right"))
+            block_merge("right")
+        elif who == "set" and safe:
+            ans = True
+            while ans:
+                set_siteY(get_siteY() + 1)
+                # tasks_set = loop.create_task(block_merge("set"))
+                ans = block_merge("set")
+                # loop.run_until_complete(tasks_set)
+                # ans = tasks_set.result()
 
     # elif who == "hold":
     #     asyncio.run(tick())

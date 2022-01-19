@@ -1,11 +1,12 @@
 #proccess image with another player
 """
-90-97->block_img
 11->next
 12->score
+13->end[999]
 """
 import time
-from tkinter import DISABLED, HIDDEN
+from tkinter import DISABLED, HIDDEN, messagebox
+from control import set_switch
 
 from func import get_netGo
 
@@ -17,7 +18,6 @@ def remote(root, base, remote_block_img, remote_next_img, remote_score_num, time
     while True:
         time.sleep(0.007)
         data_dic = net_go.recv()
-        print("echo", data_dic)
         if data_dic != "":
             data = data_dic['data']
             # print(data)
@@ -40,6 +40,9 @@ def remote(root, base, remote_block_img, remote_next_img, remote_score_num, time
                 base.itemconfig(remote_score_num[0][(score%1000)//100], state=DISABLED)
                 base.itemconfig(remote_score_num[1][(score%100)//10], state=DISABLED)
                 base.itemconfig(remote_score_num[2][(score%10)//1], state=DISABLED)
+            elif data[0] == 13:
+                set_switch(0)
+                messagebox.showwarning("End", "請手動重啟以再次遊玩")
             else:
                 for k in range(7):
                     for i in range(20):
