@@ -76,25 +76,39 @@ class PGinternet():
 			sleep(self.__updateTime)
 
 	def __keepRecv(self):
-		while self.__execute:
-			try:
-				data = self.__socket.recv(16383).decode('utf8')
-				self.__getRecv.append(data)
-				gameStatus = data.rfind("time")
-				if gameStatus != -1 and len(data) > gameStatus + 7:
-					if data[gameStatus+6] == "0":
-						self.__execute = False
-						self.__linkedserver = False
-						self.__socket.close()
-						break
-					elif data[gameStatus+6] == " ":
-						if data[gameStatus+7] == "0":
-							self.__execute = False
-							self.__linkedserver = False
-							self.__socket.close()
-							break
-				sleep(self.__updateTime)
-			except: sleep(self.__updateTime)
+		ans = ""
+		fin = ""
+		right = -1
+		ansNum = 0
+		time = 1000
+		while len(self.__getRecv) != 0:
+			text = self.__getRecv.pop(0)
+			if text == "": continue
+
+			right = text.find("}")
+			if right != -1:
+				self.__getRecv.insert(0, text[right+1:])
+				ans += text[:right+1]
+				try:
+					ans = eval(ans)
+					for x in ans["data"]:
+						if x == '[': ansNum += 1
+						elif x == ']': ansNum -= 1
+					fin += ans["data"]
+					if time > ans["time"]: time = ans["time"]
+
+					if ansNum == 0: return {"data" : eval(fin), "time" : time}
+
+					ans = ""
+					right = -1
+				except:
+					self.__getRecv.insert(0, text[text.find('}')+1:])
+					ans = ""
+					right = -1
+			else:
+				ans += text
+				right = -1
+		return ""
 
 	def send(self, text): self.__willSend.append(text)
 
@@ -136,12 +150,13 @@ class PGerror(Exception):
 
 
 if __name__ == "__main__":
+	msg = [[[0 for i in range(10)] for j in range(20)] for k in range(7)]
 	net = PGinternet(updateTime = 1, IP = "192.168.88.128", host = 9487)
 	net.link()
 
 	while net.done:
 		while net.gameStart:
-			net.send("[[[[test used data]]]]")
+			net.send(msg)
 			data = net.recv()
-			print(data)
+			print(data["data"], data["time"])
 			sleep(1)
