@@ -49,9 +49,9 @@ def remoteScreen(root, base, remote_block_img, remote_next_img, remote_score_num
                 # print("pass_before", data, type(data))
             now = data_dic['time']
             # if type(data) == list:
-            if data[0]!=11 and data[0]!=12 and len(data)>1:
-                # print("pass_after", data, type(data))
-                pass
+            # if data[0]!=11 and data[0]!=12 and len(data)>1:
+            #     # print("pass_after", data, type(data))
+            #     pass
             if data[0] == 11:
                 for i in range(7):
                     base.itemconfig(remote_next_img[i], state=HIDDEN)
@@ -65,13 +65,13 @@ def remoteScreen(root, base, remote_block_img, remote_next_img, remote_score_num
                 base.itemconfig(remote_score_num[1][(score%100)//10], state=DISABLED)
                 base.itemconfig(remote_score_num[2][(score%10)//1], state=DISABLED)
             else:
-                # for k in range(7):
-                for i in range(20):
-                    for j in range(10):
-                        if data[data[0]-90][i][j] == 1:
-                            base.itemconfig(remote_block_img[data[0]-90][i][j], state=DISABLED)
-                        else:
-                            base.itemconfig(remote_block_img[data[0]-90][i][j], state=HIDDEN)
+                for k in range(7):
+                    for i in range(20):
+                        for j in range(10):
+                            if data[k][i][j] == 1:
+                                base.itemconfig(remote_block_img[k][i][j], state=DISABLED)
+                            else:
+                                base.itemconfig(remote_block_img[k][i][j], state=HIDDEN)
             for i in range(3): #minutes
                 base.itemconfig(time_num[1][i], state=HIDDEN)
             base.itemconfig(time_num[1][now//60], state=DISABLED)

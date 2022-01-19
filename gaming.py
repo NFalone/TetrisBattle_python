@@ -132,7 +132,7 @@ def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_ho
 
 def block_generate(block_next):  #geterate new block color number and update image
     global frame_background, frame_backgroundTemp, frame_out, block_img, base, blockStatus, block
-    time.sleep(0.1)
+    time.sleep(0.07)
     set_siteX(4)
     set_siteY(0)
     set_holdCount(0)
@@ -190,15 +190,17 @@ def block_merge(call):  #merge 2Darray and check the block
     for i in range(1, 21):
         for j in range(1, 11):
             frame_backgroundTemp[i][j] = frame_out[i][j]
-    if call == "left" or call == "right" or call == "game":
+    if call == "left" or call == "right":
         ScreenUpdate(frame_backgroundTemp)
-        safe = True
     elif call == "drop":
         ScreenUpdate(frame_backgroundTemp)
     elif call == "rotate":
         ScreenUpdate(frame_backgroundTemp)
     elif call == "set":
         return True
+    elif call == "game":
+        ScreenUpdate(frame_backgroundTemp)
+        safe = True
     return
 
 def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
