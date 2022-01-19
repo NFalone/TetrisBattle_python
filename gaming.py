@@ -1,8 +1,9 @@
 import tkinter as tk
-import random, time, threading, asyncio
+import random, time, asyncio
 
 from control import get_hold, get_holdCount, get_score, get_siteX, get_siteY, get_switch, set_hold, set_holdCount, set_score, set_siteX, set_siteY, set_switch
 from func import get_netGo
+from tkinter import messagebox
 
 blockframe = [[[0, 0, 0, 0],  #block0 紅Z  0
                [0, 1, 1, 0],
@@ -104,7 +105,7 @@ def Gaming(arg_block_img, arg_next_img, arg_base, arg_root, arg_tick_img, arg_ho
     tick_img = arg_tick_img
     hold_img = arg_hold_img
     score_num = arg_score_num
-    threads = arg_threads
+    # threads = arg_threads
     frame_background = [[0 for j in range(15)] for i in range(25)] #the frame of background (column 1L4R  row (1T)4B)
     frame_background.append(0)  #frame_background[25] = color info
     frame_backgroundTemp = [[0 for j in range(15)] for i in range(25)] #the status before event
@@ -185,7 +186,7 @@ def block_merge(call):  #merge 2Darray and check the block
                 elif call == "game":
                     safe = True
                     set_switch(0)
-                    threads[0].start()
+                    messagebox.showwarning("End", "請手動重啟以再次遊玩")
     #merge success
     for i in range(1, 21):
         for j in range(1, 11):
@@ -219,8 +220,7 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
                 else:
                     base.itemconfig(block_img[k][i][j], state=tk.HIDDEN)
     root.update()
-    for i in range(7):
-        net_go.send([90+i, block_imgData[i]])
+    net_go.send(block_imgData)
 
     for i in range(1, 20):
         if frame_background[1+i].count(1) == 15:  #a line
@@ -249,9 +249,7 @@ def ScreenUpdate(frame_backgroundTemp):  #update the image on screen
         base.itemconfig(score_num[1][(get_score()%100)//10], state=tk.DISABLED)
         base.itemconfig(score_num[2][(get_score()%10)//1], state=tk.DISABLED)
         root.update()
-        for i in range(7):
-            time.sleep(0.008)
-            net_go.send([90+i, block_imgData[i]])
+        net_go.send(block_imgData)
         re_img = False
 
 def timing():  #drop block per second

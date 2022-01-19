@@ -1,5 +1,5 @@
 import tkinter as tk
-import threading
+import threading, sys
 
 from gaming import Gaming, drop, hold_block, left_shift, right_shift, rotate, set_block, timing
 from func import StartButton, go, initial, pic_decode, prepare
@@ -8,6 +8,7 @@ from remote import remote, remoteScreen
 
 def main():
 #window basic option
+    global root
     root = tk.Tk()
     root.title("Tetris Battle")
     pos_window_x = (root.winfo_screenwidth()/2) - (742/2)
@@ -112,13 +113,19 @@ def main():
     threads.append(threading.Thread(target=prepare, args=(threads, base, btn, cd_num)))
     threads.append(threading.Thread(target=Gaming, args=(block_img, next_img, base, root, tick_img, hold_img, score_num, threads)))
     threads.append(threading.Thread(target=timing, args=()))
-    threads.append(threading.Thread(target=remote, args=()))
+    threads.append(threading.Thread(target=remote, args=(root, base, remote_block_img, remote_next_img, remote_score_num, time_num)))
     threads.append(threading.Thread(target=remoteScreen, args=(root, base, remote_block_img, remote_next_img, remote_score_num, time_num)))
-    threads.append(threading.Thread(target=initial, args=(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)))
 
-    initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)
+    initial(base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num)
     threads[0].start()
+
+    root.protocol("WM_DELETE_WINDOW", windowclose)
     root.mainloop()
+
+def windowclose():
+    global root
+    root.destroy()
+    sys.exit()
 
 if __name__ == '__main__':
     main()

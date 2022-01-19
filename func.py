@@ -6,17 +6,17 @@ from PIL import Image, ImageTk
 from control import get_switch, set_hold, set_score, set_switch
 from PGinternet import PGinternet
 
-net_go = PGinternet(IP='zephyrouo.ddns.net', host=9487, updateTime=0.005)
+net_go = PGinternet(IP='zephyrouo.ddns.net', host=9487, updateTime=0.008)
 
 def pic_decode(data):
     return ImageTk.PhotoImage(Image.open(BytesIO(base64.b64decode(data))))
 
 def StartButton(threads, root, base, btn):
-#initial
+    #initial
     base.itemconfig(btn[0], state=tk.HIDDEN)
     base.itemconfig(btn[1], state=tk.HIDDEN)
     base.itemconfig(btn[2], state=tk.HIDDEN)
-#detect
+    #detect
     while True:
         time.sleep(0.01)
         #mouse position in window
@@ -30,7 +30,6 @@ def StartButton(threads, root, base, btn):
             base.itemconfig(btn[1], state=tk.HIDDEN)
         #press the button
         if (get_switch() == 1):
-            threads[6].start()
             base.itemconfig(btn[0], state=tk.HIDDEN)
             base.itemconfig(btn[1], state=tk.HIDDEN)
             base.itemconfig(btn[2], state=tk.DISABLED)
@@ -68,7 +67,7 @@ def prepare(threads, base, btn, cd_num): #after press the button
     threads[3].start()
 
 
-def initial(threads, base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num): #initial all
+def initial(base, time_num, cd_num, block_img, remote_block_img, next_img, remote_next_img, hold_img, remote_hold_img, tick_img, remote_score_num, score_num): #initial all
     global IO_go
     IO_go = True
     for i in range(4):
