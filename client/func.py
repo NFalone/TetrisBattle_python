@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 from control import get_switch, set_hold, set_score, set_switch
 from PGinternet import PGinternet
 
-net_go = PGinternet(IP='zephyrouo.ddns.net', host=9487, updateTime=0.02)
+net_go = PGinternet(IP='passing.lazpig.info', host=9487, updateTime=0.02)
 
 def pic_decode(data):
     return ImageTk.PhotoImage(Image.open(BytesIO(base64.b64decode(data))))
