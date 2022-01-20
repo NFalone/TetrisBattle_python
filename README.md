@@ -1,5 +1,7 @@
 # TetrisBattle\_python
 
+#### From : https://zh.wikipedia.org/wiki/Tetris_Battle
+
 ## Client
 
 Game TetrisBattle from Facebook using python tkinter.
