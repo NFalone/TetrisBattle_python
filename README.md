@@ -10,6 +10,7 @@ Game TetrisBattle from Facebook using python tkinter.
 - gaming code struct is not in main line
 - event conflict (could add queue later)
 - gaming.py may be refactored
+- data packet too big
 
 ## Server
 
